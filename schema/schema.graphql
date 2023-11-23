@@ -1,0 +1,23 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  getWeather(id: String!): Weather!
+  listWeathers(limit: Int, nextToken: String): [Weather!]!
+}
+
+type Mutation {
+  createWeather(weather: String!, town: String!): Weather!
+  updateWeather(id: String!, weather: String, town: String!): Weather!
+  deleteWeather(id: String!): Boolean!
+}
+
+type Weather {
+  id: String!
+  weather: String!
+  town: String!
+  createdOn: AWSTimestamp!
+  updatedOn: AWSTimestamp
+}

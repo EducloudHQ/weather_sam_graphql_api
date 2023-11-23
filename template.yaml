@@ -1,0 +1,104 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-app-gql
+
+  Sample SAM Template for sam-app-gql
+
+Resources:
+  WeatherTable:
+    Type: AWS::Serverless::SimpleTable
+
+  WeatherGraphQLApi:
+    Type: AWS::Serverless::GraphQLApi
+    Properties:
+      SchemaUri: ./schema/schema.graphql
+      Auth:
+        Type: API_KEY
+      ApiKeys:
+        MyApiKey:
+          Description: weather api key
+      DataSources:
+        DynamoDb:
+          Weather:
+            TableName: !Ref WeatherTable
+            TableArn: !GetAtt WeatherTable.Arn
+      Functions:
+        preprocessWeatherItem:
+          Runtime:
+            Name: APPSYNC_JS
+            Version: 1.0.0
+          DataSource: NONE
+          CodeUri: ./functions/preprocessWeatherItem.js
+        createWeatherItem:
+          Runtime:
+            Name: APPSYNC_JS
+            Version: "1.0.0"
+          DataSource: Weather
+          CodeUri: ./functions/createWeatherItem.js
+        getWeatherItem:
+          Runtime:
+            Name: APPSYNC_JS
+            Version: "1.0.0"
+          DataSource: Weather
+          CodeUri: ./functions/getWeatherItem.js
+        updateWeatherItem:
+          Runtime:
+            Name: APPSYNC_JS
+            Version: "1.0.0"
+          DataSource: Weather
+          CodeUri: ./functions/updateWeatherItem.js
+        deleteWeatherItem:
+          Runtime:
+            Name: APPSYNC_JS
+            Version: "1.0.0"
+          DataSource: Weather
+          CodeUri: ./functions/deleteWeatherItem.js
+        listWeathers:
+          Runtime:
+            Name: APPSYNC_JS
+            Version: "1.0.0"
+          DataSource: Weather
+          CodeUri: ./functions/listWeathers.js
+      Resolvers:
+        Mutation:
+          createWeather:
+            Runtime:
+              Name: APPSYNC_JS
+              Version: "1.0.0"
+            Pipeline:
+              - preprocessWeatherItem
+              - createWeatherItem
+          updateWeather:
+            Runtime:
+              Name: APPSYNC_JS
+              Version: "1.0.0"
+            Pipeline:
+              - updateWeatherItem
+          deleteWeather:
+            Runtime:
+              Name: APPSYNC_JS
+              Version: "1.0.0"
+            Pipeline:
+              - deleteWeatherItem
+        Query:
+          getWeather:
+            Runtime:
+              Name: APPSYNC_JS
+              Version: "1.0.0"
+            Pipeline:
+              - getWeatherItem
+          listWeathers:
+            Runtime:
+              Name: APPSYNC_JS
+              Version: "1.0.0"
+            Pipeline:
+              - listWeathers
+
+Outputs:
+  WeatherGraphQLApi:
+    Description: WeatherGraphQLApi endpoint URL for Prod environment
+    Value: !GetAtt WeatherGraphQLApi.GraphQLUrl
+  WeatherGraphQLApiMyApiKey:
+    Description: API Key for WeatherGraphQLApi
+    Value: !GetAtt WeatherGraphQLApiMyApiKey.ApiKey
