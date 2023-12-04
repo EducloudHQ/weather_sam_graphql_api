@@ -1,0 +1,23 @@
+{
+  "arguments": {
+    "id": "d0446bc6-928b-11ee-b9d1-0242ac120002",
+    "weather": "cold",
+    "town": "Douala"
+  },
+  "source": {},
+  "result": {},
+  "request": {},
+  "prev": {
+    "result": {
+      "key": {
+        "id": "d0446bc6-928b-11ee-b9d1-0242ac120002"
+      },
+      "values": {
+        "weather": "cold",
+        "town": "Douala",
+
+        "createdOn": 1694943063521
+      }
+    }
+  }
+}
